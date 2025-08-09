@@ -39,3 +39,14 @@
 
 # debug information files
 *.dwo
+
+
+/x64/
+/x86/
+/Debug/
+/Release/
+Algorhythm/x64
+CodeTest/CodeTest/x64
+ModernStudy/x64
+Documents/CodingTest
+CodeTest/.vs
