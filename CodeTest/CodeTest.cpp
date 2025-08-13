@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <numeric>
+#include <optional>
 
 #include <vector>
 #include <string>
@@ -1393,17 +1394,233 @@ namespace P_42748
     }
 }
 
-
-
 namespace P_120833
 {
     vector<int> solution(vector<int> numbers, int num1, int num2) {
         vector<int> answer;
+
+        for (int i = num1; i <= num2; i++)
+            answer.push_back(numbers[i]);
+
         return answer;
+    }
+}
+
+namespace P_120816
+{
+    int solution(int slice, int n) {
+        return ceil(n / (float)slice);
+    }
+}
+
+namespace P_43238
+{
+    long long solution(int n, vector<int> times) {
+        long long left = 1;
+        long long right = (long long)*max_element(times.begin(), times.end()) * n;
+        long long answer = right;
+
+        while (left <= right) {
+            long long mid = (left + right) / 2;
+            long long total = 0;
+
+            for (int t : times) {
+                total += mid / t;
+                if (total >= n) // 오버플로우 방지 및 불필요한 계산 방지
+                    break;
+            }
+
+            if (total >= n) {
+                answer = mid;
+                right = mid - 1;
+            }
+            else {
+                left = mid + 1;
+            }
+        }
+
+        return answer;
+    }
+}
+
+namespace P_120841
+{
+    int solution(vector<int> dot) {
+        int x = dot[0];
+        int y = dot[1];
+
+        if( x > 0 && y > 0 )
+            return 1;
+        else if (x < 0 && y > 0)
+            return 2;
+        else if (x < 0 && y < 0)
+            return 3;
+        else if (x > 0 && y < 0)
+            return 4;
+
+        return 1;
+    }
+}
+
+namespace P_120903
+{
+    int solution(vector<string> s1, vector<string> s2) {
+        int answer = 0;
+
+        for (auto s : s1)
+        {
+            if (std::find(s2.begin(), s2.end(), s) != s2.end())
+            {
+                answer++;
+            }
+        }
+
+        return answer;
+    }
+}
+
+
+namespace P_68937
+{
+    int getDistance(int start, int end, const vector<vector<int>>& adjacency)
+    {
+        if (start == end)
+            return 0;
+
+        vector<bool> visited(adjacency.size(), false);
+        queue<pair<int, int>> q; // pair<node, distance>
+
+        q.push({ start, 0 });
+        visited[start] = true;
+
+        while (!q.empty())
+        {
+            auto [cur, dist] = q.front();
+            q.pop();
+
+            for (int next : adjacency[cur])
+            {
+                if (!visited[next])
+                {
+                    if (next == end)
+                        return dist + 1;
+
+                    visited[next] = true;
+                    q.push({ next, dist + 1 });
+                }
+            }
+        }
+
+        return -1; // 연결 안 됨
+    }
+
+    int solution(int n, vector<vector<int>> edges) {
+        vector<vector<int>> adjacency(n + 1);
+
+        for (const auto& e : edges)
+        {
+            adjacency[e[0]].push_back(e[1]);
+            adjacency[e[1]].push_back(e[0]);
+        }
+
+        for (int i = 1; i <= n; ++i)
+        {
+            sort(adjacency[i].begin(), adjacency[i].end());
+        }
+
+        vector<int> nums(n);
+        iota(nums.begin(), nums.end(), 1);
+
+        vector<bool> mask(n, false);
+        fill(mask.begin(), mask.begin() + 3, true); // 3개 선택
+
+        int answer = 0;
+
+        do
+        {
+            vector<int> node;
+            for (int i = 0; i < n; i++)
+            {
+                if (mask[i])
+                    node.push_back(nums[i]);
+            }
+
+            for (int i = 0; i < (int)node.size() - 1; i++)
+            {
+                int dist = getDistance(node[i], node[i + 1], adjacency);
+
+                if (dist == 2)
+                    return 2;
+
+                answer = max(answer, dist);
+            }
+
+        } while (prev_permutation(mask.begin(), mask.end()));
+
+        return answer;
+    }
+}
+
+namespace P_43163
+{
+    int similar(string begin, string target)
+    {
+        int ret = 0;
+        for (int i = 0; i < begin.size(); i++)
+        {
+            if (begin[i] == target[i])
+                ret++;
+        }
+
+        return ret;
+    }
+
+    int GetWords(string start, string target, vector<string> list, int count)
+    {
+        vector<string> ret;
+
+        for (auto c : list)
+        {
+            int similar_count = similar(start, c);
+
+            // 한글자 차이난것만 찾는다
+            if(similar_count  == start.length() - 1)
+                ret.push_back(c);
+        }
+
+        vector<string> ret2(list);
+        for (auto f : ret)
+        {
+            auto it = std::find(ret2.begin(), ret2.end(), f);
+            ret2.erase(it);
+        }
+
+        for( auto n_start : ret)
+        {
+            if (n_start == target)
+                return count+1;
+            else
+            {
+                int res = GetWords(n_start, target, ret2, count + 1);
+                if (res != 0)
+                    return res;
+            }
+        }
+
+        return 0;
+    }
+
+    int solution(string begin, string target, vector<string> words) {
+
+        if (std::find(words.begin(), words.end(), target) == words.end())
+            return 0;
+
+        int count = GetWords(begin, target, words, 0);
+        return count;
     }
 }
 
 void main(void)
 {
-    return;
+    auto c1 = P_43163::solution("hit", "cog", { "hot", "dot", "dog", "lot", "log", "cog" });
 }

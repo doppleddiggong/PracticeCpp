@@ -1,0 +1,10 @@
+# C++ 파일 설정 예시
+[*.cpp]
+indent_style = space
+indent_size = 4
+charset = utf-8-bom
+
+[*.h]
+indent_style = space
+indent_size = 4
+charset = utf-8-bom

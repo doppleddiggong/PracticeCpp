@@ -211,5 +211,23 @@ namespace TREE_NODE
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    std::vector<int> nums = { 1,2,3,4 };
+    int r = 3;
+
+    std::sort(nums.begin(), nums.end());
+
+    std::vector<bool> mask(nums.size(), false);
+    std::fill(mask.begin(), mask.begin() + r, true);
+
+    do
+    {
+        for (int i = 0; i < nums.size(); ++i) 
+        {
+            if (mask[i]) 
+                std::cout << nums[i] << " ";
+        }
+        std::cout << "\n";
+    } while (std::prev_permutation(mask.begin(), mask.end()));
+
+    return 0;
 }
